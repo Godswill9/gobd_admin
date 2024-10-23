@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../../stylings/styles.css'; // Import the CSS file
+import '../../../stylings/styles.css'; // Import the CSS file
 
 export default class Header extends Component {
   render() {

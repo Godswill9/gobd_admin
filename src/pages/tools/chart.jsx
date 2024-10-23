@@ -5,7 +5,7 @@ export default function Chart() {
 const data = [
   {
     name: 'Page A',
-    uv: 4000,
+    uv: 250,
     pv: 2400,
     amt: 2400,
   },

@@ -16,6 +16,32 @@
   top: 0%;
   height: 4em;
   z-index: 2;
+  box-shadow: 0 0 20px black;
+}
+.header .res {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.header .res .header-search {
+  margin-left: 2em;
+}
+.header .sideBar .header-search {
+  display: none;
+}
+.header .open {
+  display: none;
+  background: #000000;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 5px;
+}
+@media (max-width: 768px) {
+  .header .open {
+    display: block;
+  }
 }
 .header .header-search {
   width: -moz-fit-content;
@@ -23,7 +49,7 @@
   margin-right: 5em;
 }
 .header .header-search input {
-  width: 40em;
+  width: 30em;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -75,19 +101,23 @@
 .header .header-right .admin-data .right .name {
   font-weight: bold;
 }
-@media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .header .header-search {
-    margin: 10px 0;
-    width: 100%;
-  }
-  .header .header-right {
-    justify-content: space-between;
-    width: 100%;
-  }
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.3019607843);
+  margin: 20px 0;
+  margin-right: 2em;
+}
+
+.separator {
+  margin: 0 5px;
+}
+
+.active {
+  font-weight: bold; /* Example styling for the active breadcrumb */
+  color: black; /* Change to your preferred active color */
 }
 
 .sideBar {
@@ -100,6 +130,18 @@
   left: 0%;
   top: 0%;
   z-index: 2;
+  box-shadow: 0 0 20px rgb(22, 22, 22);
+}
+.sideBar .close {
+  background-color: rgb(6, 6, 124);
+  color: white;
+  position: absolute;
+  top: 50%; /* Center vertically */
+  right: -20%; /* Adjust as needed for your design */
+  transform: translateY(-50%);
+  padding: 10px;
+  border-radius: 5px;
+  display: none;
 }
 .sideBar .header-logo {
   background: rgb(6, 6, 124);
@@ -109,6 +151,12 @@
   align-items: center;
   justify-content: center;
   height: 4.5em;
+}
+.sideBar .header-search {
+  width: 100%;
+}
+.sideBar .header-search input {
+  width: 90%;
 }
 .sideBar ul {
   list-style-type: none;
@@ -150,10 +198,554 @@
 }
 
 .container {
-  border: 1px solid black;
   width: 84.8%;
-  height: 100vh;
   position: absolute;
   right: 0%;
   top: 14%;
+  font-family: sans-serif;
+}
+.container .section1 {
+  border: 1px solid rgba(1, 1, 8, 0.185);
+  padding: 10px;
+}
+.container .section1 .head {
+  font-size: 12px;
+  font-weight: bold;
+  margin: 10px 0 10px 0;
+}
+.container .section1 .metrics {
+  display: grid; /* Use grid layout */
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsive columns */
+  gap: 20px; /* Space between items */
+  align-items: center; /* Center items vertically */
+}
+.container .section1 .value {
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 13px;
+  height: 6em;
+  background-color: rgba(0, 0, 0, 0.0823529412);
+  position: relative;
+  transition: background-color 0.3s; /* Optional: Smooth background change */
+}
+.container .section1 .value .num {
+  margin-top: 5px;
+  display: block;
+  font-weight: bold;
+  font-size: 15px;
+  position: absolute;
+  bottom: 1%;
+  margin: 10px;
+}
+.container .section1 .active {
+  background: rgb(27, 27, 75);
+  color: white;
+}
+.container .section2 {
+  width: 100%;
+  height: 20em;
+  display: flex;
+  padding: 10px;
+}
+@media (max-width: 611px) {
+  .container .section2 {
+    flex-direction: column;
+    height: -moz-fit-content;
+    height: fit-content;
+  }
+}
+.container .section2 .chartsCont {
+  width: 60%;
+  height: 100%;
+  min-width: 50%;
+  font-size: 13px;
+}
+@media (max-width: 611px) {
+  .container .section2 .chartsCont {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+.container .section2 .individualsCont {
+  width: 35%;
+}
+@media (max-width: 611px) {
+  .container .section2 .individualsCont {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+.container .section2 .individualsCont table {
+  border: 1px solid black;
+  width: 100%;
+  border-collapse: collapse;
+  margin-left: 1em;
+  font-size: 13px;
+}
+.container .section2 .individualsCont table th, .container .section2 .individualsCont table td {
+  border: 1px solid rgba(0, 0, 0, 0.075);
+  text-align: center;
+  color: rgba(0, 0, 0, 0.596);
+  padding: 15px;
+}
+.container .section3 {
+  overflow: auto;
+}
+.container .section3 h2 {
+  font-size: 18px;
+  padding: 10px;
+}
+.container .section3 table {
+  border: 1px solid black;
+  width: 100%;
+  border-collapse: collapse;
+  margin-left: 1em;
+  font-size: 13px;
+}
+@media (max-width: 611px) {
+  .container .section3 table {
+    width: 50em;
+  }
+}
+.container .section3 table th, .container .section3 table td {
+  border: 1px solid rgba(0, 0, 0, 0.075);
+  text-align: center;
+  color: rgba(0, 0, 0, 0.596);
+  padding: 15px;
+}
+.container .containerSupport .tableSection {
+  overflow: auto;
+}
+.container .containerSupport .head {
+  padding: 10px;
+  font-weight: bold;
+}
+.container .containerSupport table {
+  width: 80%;
+  border-collapse: collapse;
+  margin-left: 1em;
+  font-size: 13px;
+}
+@media (max-width: 611px) {
+  .container .containerSupport table {
+    width: 50em;
+  }
+}
+.container .containerSupport table th, .container .containerSupport table td {
+  border: 1px solid rgba(0, 0, 0, 0.075);
+  text-align: center;
+  color: rgba(0, 0, 0, 0.596);
+  padding: 7px;
+  text-align: left;
+}
+.container .containerSupport table th {
+  background-color: rgb(179, 179, 179);
+  color: white;
+}
+.container .containerSupport table .low {
+  background-color: rgba(0, 0, 0, 0.199);
+  color: black;
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 4px;
+  margin: 4px;
+  text-align: center;
+  border-radius: 5px;
+}
+.container .containerSupport table .medium {
+  background-color: rgba(195, 216, 5, 0.493);
+  color: rgb(136, 136, 9);
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 4px;
+  margin: 4px;
+  text-align: center;
+  border-radius: 5px;
+}
+.container .containerSupport table .high {
+  background-color: rgba(238, 14, 14, 0.199);
+  color: red;
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 4px;
+  margin: 4px;
+  text-align: center;
+  border-radius: 5px;
+}
+.container .containerSupport table .action {
+  text-align: center;
+}
+.container .containerMessages {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 13px;
+}
+.container .containerMessages .headerSection {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  color: rgba(43, 42, 42, 0.212);
+}
+.container .containerMessages .headerSection .dm, .container .containerMessages .headerSection .notifications {
+  margin-right: 1em;
+  padding: 5px;
+  border-radius: 5px;
+  transition: 0.1s ease-in-out;
+  letter-spacing: 1.5px;
+  font-weight: bold;
+}
+.container .containerMessages .headerSection .active {
+  color: rgb(0, 0, 0);
+}
+.container .containerMessages .headerSection .dm:hover {
+  background: rgb(6, 6, 124);
+  color: white;
+}
+.container .containerMessages .headerSection .notifications:hover {
+  background: rgb(6, 6, 124);
+  color: white;
+}
+.container .containerMessages .messageSection {
+  display: flex;
+}
+.container .containerMessages .messageSection .messageList, .container .containerMessages .messageSection .chatSection {
+  border: 1px solid rgba(0, 0, 0, 0.096);
+  font-size: 13px;
+}
+.container .containerMessages .messageSection .messageList {
+  border-right: none;
+}
+.container .containerMessages .messageSection .messageList {
+  width: 30%;
+  max-height: 25em;
+  overflow: auto;
+}
+.container .containerMessages .messageSection .messageList .details .indiv {
+  border: 1px solid rgba(0, 0, 0, 0.068);
+  display: flex;
+  align-items: center;
+  color: rgb(160, 160, 160);
+  font-size: 11px;
+  padding: 5px;
+}
+.container .containerMessages .messageSection .messageList .details .indiv .image {
+  margin: 5px;
+}
+.container .containerMessages .messageSection .messageList .details .indiv .image img {
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 50%;
+  border: 1px solid rgb(0, 0, 0);
+}
+.container .containerMessages .messageSection .messageList .details .indiv .other .name {
+  font-weight: bold;
+}
+.container .containerMessages .messageSection .messageList .details .indiv .other .messageDetails {
+  letter-spacing: 1px;
+}
+.container .containerMessages .messageSection .messageList .details .indiv:hover {
+  background: rgb(6, 6, 124);
+  color: white;
+  transition: 0.1s ease-in-out;
+}
+.container .containerMessages .messageSection .chatSection {
+  width: 50%;
+}
+@media (max-width: 611px) {
+  .container .containerMessages .messageSection .chatSection {
+    width: 80%;
+  }
+}
+.container .containerMessages .messageSection .chatSection .chatCont {
+  height: 25em;
+  overflow-y: auto;
+}
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 11px;
+}
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender, .container .containerMessages .messageSection .chatSection .chatCont .messageSection .reciever {
+  width: 100%;
+}
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender {
+  padding: 10px;
+}
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender .senderInner {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+}
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender .senderInner .message {
+  max-width: 70%;
+  background: rgb(6, 6, 124);
+  color: white;
+  padding: 8px;
+  border-radius: 5px;
+}
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .reciever {
+  padding: 10px;
+}
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .reciever .recieverInner {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+}
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .reciever .recieverInner .message {
+  max-width: 70%;
+  background: rgba(49, 49, 49, 0.103);
+  color: black;
+  padding: 8px;
+  border-radius: 5px;
+}
+.container .containerMessages .messageSection .chatSection .inputSection {
+  border-top: 1px solid rgba(0, 0, 0, 0.199);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.container .containerMessages .messageSection .chatSection .inputSection #file {
+  margin: 5px;
+}
+.container .containerMessages .messageSection .chatSection .inputSection #text {
+  width: 75%;
+  padding: 10px;
+  border: none;
+}
+.container .containerMessages .messageSection .chatSection .inputSection button {
+  padding: 5px;
+  margin: 5px;
+  border: none;
+  color: white;
+  background: rgb(9, 16, 109);
+  border-radius: 5px;
+}
+.container .containerMessages .messageSection .chatDetails {
+  width: 25%;
+}
+@media (max-width: 611px) {
+  .container .containerMessages .messageSection .chatDetails {
+    display: none;
+  }
+}
+.container .containerMessages .messageSection .chatDetails .userIntro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 10em;
+}
+.container .containerMessages .messageSection .chatDetails .userIntro img {
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 50%;
+  padding: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.521);
+}
+.container .containerMessages .messageSection .chatDetails .userIntro .name {
+  font-weight: bold;
+}
+.container .containerMessages .messageSection .chatDetails .userOther .indiv {
+  border: 1px solid rgba(0, 0, 0, 0.158);
+  padding: 10px;
+}
+.container .containerMessages .messageSection .chatDetails .userOther .title {
+  font-weight: bold;
+}
+.container .containerIndividuals .tableSection {
+  overflow: auto;
+}
+.container .containerIndividuals table {
+  width: 90%;
+  border-collapse: collapse;
+  margin-left: 1em;
+  font-size: 13px;
+}
+@media (max-width: 669px) {
+  .container .containerIndividuals table {
+    width: 60em;
+    overflow: auto;
+  }
+}
+.container .containerIndividuals table th, .container .containerIndividuals table td {
+  border: 1px solid rgba(0, 0, 0, 0.075);
+  text-align: center;
+  color: rgba(0, 0, 0, 0.596);
+  padding: 10px;
+}
+.container .containerIndividuals table th {
+  background-color: rgb(179, 179, 179);
+  color: white;
+}
+.container .containerIndividuals .section1 {
+  border: none;
+}
+.container .containerRequest .head {
+  font-size: 12px;
+  font-weight: bold;
+  margin: 10px 0 10px 0;
+  border: 1px solid rgba(1, 1, 8, 0.185);
+  padding: 10px;
+}
+.container .containerRequest .others {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+.container .containerRequest .left {
+  width: 50%;
+  font-size: 13px;
+  margin-left: 1em;
+}
+.container .containerRequest .left .requestSummary {
+  width: 100%;
+  font-size: 13px;
+  margin-top: 15px;
+}
+.container .containerRequest table {
+  border: 1px solid black;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.container .containerRequest table th, .container .containerRequest table td {
+  border: 1px solid rgba(0, 0, 0, 0.075);
+  color: rgba(0, 0, 0, 0.596);
+  padding: 10px;
+}
+.container .containerRequest table th {
+  background-color: rgb(179, 179, 179);
+  color: white;
+  position: sticky;
+  top: 15%;
+  text-align: left;
+}
+.container .containerRequest .right {
+  border-left: 1px solid black;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 13px;
+}
+.container .containerRequest .right .requestIntro {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+  margin-top: 3em;
+}
+.container .containerRequest .right .requestIntro .img img {
+  border: 1px solid black;
+  width: 3em;
+  height: 3em;
+  border-radius: 50%;
+  padding: 10px;
+}
+.container .containerRequest .right .requestOther {
+  padding: 20px;
+  width: 100%;
+}
+.container .containerRequest .right .requestOther .indiv {
+  border-top: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  font-size: 13px;
+}
+.container .containerRequest .right .requestOther .indiv:last-child {
+  border-bottom: 1px solid black;
+}
+.container .containerRequest .right .reviews {
+  margin-top: 10px;
+  height: 15em;
+  overflow: auto;
+  position: relative;
+  padding: 20px;
+}
+.container .containerRequest .right .reviews .revHead {
+  width: 100%;
+  padding: 5px;
+  position: sticky;
+  top: 0%;
+  font-size: 13px;
+  background-color: rgba(26, 26, 26, 0.137);
+}
+.container .containerRequest .right .reviews .indiv {
+  font-size: 13px;
+  margin-top: 5px;
+}
+.container .containerRequest .right .reviews .indiv .review {
+  word-spacing: 2px;
+}
+.container .containerRequest .right .reviews .indiv .author {
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    padding: 10px;
+  }
+  .header .res {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .header .res .header-search {
+    display: none;
+  }
+  .header .res .header-right .admin-data {
+    width: -moz-fit-content;
+    width: fit-content;
+  }
+  .header .sideBar {
+    width: 50%;
+    background: white;
+    left: -200%;
+    transition: 0.1s ease-in-out;
+  }
+  .header .sideBar .header-search {
+    display: block;
+  }
+  .header .sideBar .close {
+    background-color: rgb(6, 6, 124);
+    color: white;
+    position: absolute;
+    top: 50%; /* Center vertically */
+    right: -10%; /* Adjust as needed for your design */
+    transform: translateY(-50%);
+    padding: 10px;
+    border-radius: 5px;
+    display: block;
+  }
+  .header .openUp {
+    left: 0%; /* Change the right position when open */
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    position: absolute;
+    right: 0%;
+    top: 14%;
+    overflow-x: hidden;
+  }
 }/*# sourceMappingURL=styles.css.map */
