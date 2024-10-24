@@ -14,7 +14,7 @@ export default class Sidebar extends Component {
           <img src="image_asoroauto.webp" alt="Logo" /> {/* Replace with your logo */}
         </div>
            <ul>
-            <li><a href="/">Dashboard</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/individuals">Individuals</a></li>
             {/* <li><a href="/individualsRequest">Settings</a></li> */}
             <li><a href="/messages">Messages</a></li>
