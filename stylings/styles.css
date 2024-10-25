@@ -490,6 +490,11 @@
   color: white;
   padding: 8px;
   border-radius: 5px;
+  height: -moz-fit-content;
+  height: fit-content;
+  display: inline-block;
+  word-wrap: break-word;
+  text-align: left;
 }
 .container .containerMessages .messageSection .chatSection .chatCont .messageSection .reciever {
   padding: 10px;
@@ -505,6 +510,11 @@
   color: black;
   padding: 8px;
   border-radius: 5px;
+  height: -moz-fit-content;
+  height: fit-content;
+  display: inline-block;
+  word-wrap: break-word;
+  text-align: left;
 }
 .container .containerMessages .messageSection .chatSection .inputSection {
   border-top: 1px solid rgba(0, 0, 0, 0.199);

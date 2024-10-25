@@ -539,6 +539,10 @@
                     color: white;
                     padding: 8px;
                     border-radius: 5px;
+                    height: fit-content;
+    display: inline-block;
+    word-wrap: break-word;
+    text-align: left;
                   }
                 }
               }
@@ -554,6 +558,10 @@
                     color:black;
                     padding: 8px;
                     border-radius: 5px;
+                    height: fit-content;
+    display: inline-block;
+    word-wrap: break-word;
+    text-align: left;
                   }
                 }
               }
