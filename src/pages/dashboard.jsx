@@ -20,7 +20,6 @@ const Dashboard = () => {
         credentials: "include"
       });
       const adminData = await response.json();
-
       if (!adminData || (adminData && adminData.message === "Please log in again.")) {
        navigate("/login")
         setData(null); // Clear data if not logged in
@@ -57,7 +56,7 @@ const Dashboard = () => {
           <div className="metrics">
             <div className="value active">
               <div className="title">Total registered users</div>
-              <span className='num'>{data?.users?.length}</span>
+              <span className='num'>{data?.users?.length || 0}</span>
             </div>
             <div className="value">
               <div className="title">Pending Messages</div>
@@ -84,13 +83,21 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {siteUsers?.map((item, i) => (
-                  <tr key={i}>
-                    <td>{item.username}</td>
-                    <td>{item.email}</td>
-                    <td>{item.phone}</td>
-                  </tr>
-                ))}
+              {siteUsers && siteUsers.length > 0 ? (
+  siteUsers.map((item, i) => (
+    <tr key={i}>
+      <td>{item.username}</td>
+      <td>{item.email}</td>
+      <td>{item.phone}</td>
+    </tr>
+  ))
+) : (
+  <tr>
+    <td colSpan={3} style={{ textAlign: 'center' }}>
+      No users available
+    </td>
+  </tr>
+)}
               </tbody>
             </table>
           </div>
@@ -108,15 +115,23 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {payments?.map((item,i) => (
-                <tr key={i}>
-                  <td>{item.username}</td>
-                  <td>{item.payment.amount}</td>
-                  <td>{item.payment.payment_status}</td>
-                  <td>{item.payment.subscription_plan}</td>
-                  <td>{formatDate(item.payment.payment_date)}</td>
-                </tr>
-              ))}
+            {payments && payments.length > 0 ? (
+  payments.map((item, i) => (
+    <tr key={i}>
+      <td>{item.username}</td>
+      <td>{item.payment.amount}</td>
+      <td>{item.payment.payment_status}</td>
+      <td>{item.payment.subscription_plan}</td>
+      <td>{formatDate(item.payment.payment_date)}</td>
+    </tr>
+  ))
+) : (
+  <tr>
+    <td colSpan={5} style={{ textAlign: 'center' }}>
+      No payments available
+    </td>
+  </tr>
+)}
             </tbody>
           </table>
         </div>

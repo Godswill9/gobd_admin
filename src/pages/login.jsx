@@ -84,7 +84,7 @@ const Login = () => {
   
     const loginSuccessAdmin = await handleLogin(`${import.meta.env.VITE_API_URL}/loginadmin`, data);
   
-    if (!loginSuccessAdmin) {
+    if (loginSuccessAdmin) {
       await handleLogin(`${import.meta.env.VITE_API_URL_2}/login`, data);
     }
   };

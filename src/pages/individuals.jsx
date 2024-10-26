@@ -80,23 +80,26 @@ const Individuals = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map((item) => (
-                  // <tr key={item.id} onClick={() => handleRowClick(item.id)} style={{ cursor: 'pointer' }}>
-                  <tr key={item.id} style={{ cursor: 'pointer' }}>
-                    <td>{item.id}</td>
-                    <td>{item.username}</td>
-                    <td>{item.car_make}</td>
-                  <td>{item.car_year}</td>
-                  <td>{item.car_model}</td>
-                  <td>{item.engine_type}</td>
-                  <td>{item.phone}</td>
-                  <td>{item.subscription_status}</td>
-                  {/* <td>Completed Requests</td> */}
-                    {/* <td>
-                      <button onClick={(e) => { e.stopPropagation(); handleRowClick(item.id); }}>View</button>
-                    </td> */}
-                  </tr>
-                ))}
+              {users && users.length > 0 ? (
+  users.map((item) => (
+    <tr key={item.id} style={{ cursor: 'pointer' }}>
+      <td>{item.id}</td>
+      <td>{item.username}</td>
+      <td>{item.car_make}</td>
+      <td>{item.car_year}</td>
+      <td>{item.car_model}</td>
+      <td>{item.engine_type}</td>
+      <td>{item.phone}</td>
+      <td>{item.subscription_status}</td>
+    </tr>
+  ))
+) : (
+  <tr>
+    <td colSpan={8} style={{ textAlign: 'center' }}>
+      No users in database
+    </td>
+  </tr>
+)}
               </tbody>
             </table>
           </div>

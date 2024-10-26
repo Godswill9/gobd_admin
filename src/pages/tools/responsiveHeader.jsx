@@ -28,7 +28,10 @@ class ResponsiveHeader extends Component {
       const adminData = await response.json();
 
       if (!adminData || (adminData && adminData.message === "Please log in again.")) {
-        navigate("/login");
+        // navigate("/login");
+        this.setState({ username: "Admin" }); // Assuming adminData contains username
+        // const usersData = await this.fetchAllUsersData();
+        // this.setState({nameKey: this.formatName(this.state.username)})
         return;
       } else {
         console.log(adminData);

@@ -18,6 +18,7 @@ function App() {
     <BrowserRouter>
     <AppProvider>
      <Routes>
+     <Route path={"/"} element={<Dashboard/>}></Route>
      <Route path={"/dashboard"} element={<Dashboard/>}></Route>
      <Route path={"/signup"} element={<Signup/>}></Route>
      <Route path={"/verification"} element={<Verification/>}></Route>

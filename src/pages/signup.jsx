@@ -48,6 +48,7 @@ const Signup = () => {
       });
   
       const res = await response.json();
+      console.log(res)
   
       if (res.status === 'success') {
         toast.success(successMessage, {

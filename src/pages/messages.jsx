@@ -44,6 +44,7 @@ const Messages = () => {
         console.log(adminData);
         setData(adminData);
         setUserId(adminData.id);
+        fetchMessages();
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -52,7 +53,6 @@ const Messages = () => {
 
   useEffect(() => {
     fetchData();
-    fetchMessages();
   }, []);
 
   const fetchMessages = async () => {
@@ -141,6 +141,10 @@ const Messages = () => {
 // console.log(userId)
     if (!newMessage.trim()) {
       console.log("Please enter a message");
+      return;
+    }
+    if (otherId == null) {
+      console.log("Please select a valid user");
       return;
     }
 
