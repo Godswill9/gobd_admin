@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from './tools/header';
 import Sidebar from './tools/sidebar';
 import ResponsiveHeader from './tools/responsiveHeader';
+import { useNavigate } from 'react-router-dom';
 
 const Messages = () => {
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -11,12 +12,21 @@ const Messages = () => {
   const [otherId, setOtherId] = useState(null); // Replace with the ID of the other user
   const [data, setData] = useState({});
   const [customers, setCustomers] = useState([]);
+  const [currCustomer, setcurrCustomer] = useState({});
   const [messagesMain, setMessagesMain] = useState([]);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchData();
-    fetchMessages();
-  }, []);
+
+  // useEffect(() => {
+  //   fetchData();
+  //   fetchMessages();
+
+  //   const interval = setInterval(() => {
+  //     fetchMessages();
+  //   }, 5000); // Check for new messages every 5 seconds
+
+  //   return () => clearInterval(interval); // Cleanup on unmount
+  // }, [messages, messagesMain]);
 
   const fetchData = async () => {
     try {
@@ -40,6 +50,11 @@ const Messages = () => {
     }
   };
 
+  useEffect(() => {
+    fetchData();
+    fetchMessages();
+  }, []);
+
   const fetchMessages = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL_2}/fetchAllMessages`, {
@@ -54,12 +69,39 @@ const Messages = () => {
       console.log(separatedData);
       setMessages(separatedData);
 
-      // Fetch additional data for each message
-      const customers = await Promise.all(
-        separatedData.map((item) => fetchMessagesMore(item[0].myId))
-      );
-      setCustomers(customers);
-      console.log(customers);
+       var users=[]
+       const getAllUsers = async () => {
+        try {
+          const users = await Promise.all(
+            separatedData.map(async (item) => {
+              const validUser = item.find(user => user.myId !== "admin");
+      
+              if (validUser) {
+                const responseUserData = await fetch(`${import.meta.env.VITE_API_URL_2}/user`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ id: validUser.myId, myId: "admin" }),
+                });
+      
+                if (!responseUserData.ok) throw new Error('Failed to fetch user data');
+      
+                const userData = await responseUserData.json();
+                return userData.user; // Return the username directly
+              }
+              return null; // Return null if no valid user is found
+            })
+          );
+          const filteredUsers = users.filter(user => user !== null);
+          setCustomers(filteredUsers);
+          console.log(filteredUsers)
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      };
+      
+      
+  getAllUsers()
+      
     } catch (error) {
       console.error('Error fetching messages:', error);
     }
@@ -79,14 +121,12 @@ const Messages = () => {
       console.log(data);
       localStorage.setItem("customerName", data.user.username);
 
-      const allMessages = messages;
-      const val = allMessages.find((item) => item[0].myId === myId);
+      const allMessages = data.messages;
+      allMessages.sort((a, b) => new Date(a.timeRecieved) - new Date(b.timeRecieved));
 
-      val.sort((a, b) => new Date(a.timeReceived) - new Date(b.timeReceived));
-      setMessagesMain(val);
+      console.log(myId)
+      setMessagesMain(allMessages);
       setOtherId(myId);
-
-      console.log(val)
 
       return { userName: data.user.username, userPhone: data.user.phone };
     } catch (error) {
@@ -97,7 +137,8 @@ const Messages = () => {
 
   const handleSendMessage = async () => {
     const time = new Date().toISOString().slice(0, 19).replace('T', ' '); // Use ISO format for datetime
-
+// console.log(otherId)
+// console.log(userId)
     if (!newMessage.trim()) {
       console.log("Please enter a message");
       return;
@@ -114,9 +155,16 @@ const Messages = () => {
 
       setNewMessage(''); // Clear input field
       await fetchMessages(); // Refresh messages after sending
-      // handleClick(otherId);
+      handleClick(otherId);
     } catch (error) {
       console.error('Error sending message:', error);
+    }
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSendMessage();
     }
   };
 
@@ -135,11 +183,13 @@ const Messages = () => {
       if (!response.ok) throw new Error('Failed to fetch messages');
 
       const allMessages = messages;
-      const val = allMessages.find((item) => item[0].myId === id);
 
-      val.sort((a, b) => new Date(a.timeReceived) - new Date(b.timeReceived));
-      setMessagesMain(val);
+      console.log(id)
+
+      fetchMessagesMore(id)
       setOtherId(id);
+      // console.log(customers.find(user => user.id !== id))
+      setcurrCustomer(customers.find(user => user.id == id))
       await fetchMessages(); // Refresh messages after sending
     } catch (error) {
       console.error('Error sending message:', error);
@@ -164,7 +214,7 @@ const Messages = () => {
                       <img src="vite.svg" alt="" />
                     </div>
                     <div className="other">
-                      <div className="name">{customers[i]?.userName}</div>
+                      <div className="name">{customers[i]?.username}</div>
                       <div className="messageDetails">{item[0].message}</div>
                     </div>
                   </div>
@@ -188,16 +238,16 @@ const Messages = () => {
               </div>
               <div className="inputSection">
                 <div id="file">@</div>
-                <input type="text" value={newMessage} id="text" placeholder='Send a message...' onChange={(e) => setNewMessage(e.target.value)} />
+                <input type="text" onKeyDown={handleKeyDown} value={newMessage} id="text" placeholder='Send a message...' onChange={(e) => setNewMessage(e.target.value)} />
                 <button onClick={handleSendMessage}>Send</button>
               </div>
             </div>
             <div className="chatDetails">
               <div className="userIntro">
                 <div className="img"> <img src="vite.svg" alt="" /></div>
-                <div className="name">{localStorage.getItem("customerName")}</div>
-                <div className="role">role</div>
-                <div className="number">number</div>
+                <div className="name">{currCustomer?.username}</div>
+                <div className="role">User</div>
+                <div className="number">{currCustomer?.phone}</div>
               </div>
               <div className="userOther">
                 <div className="indiv">

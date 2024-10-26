@@ -10,6 +10,8 @@ const Dashboard = () => {
   const [data, setData]=useState({
     users:[]
   })
+  const[payments, setPayments]=useState([])
+  const[siteUsers, setSiteUSers]=useState([])
 
   const fetchData = async () => {
     try {
@@ -28,8 +30,12 @@ const Dashboard = () => {
           // // Fetch additional data if logged in
       const usersData = await fetchAllUsersData();
       const paymentsData = await fetchAllPaymentsData();
+      const siteUsersData = await fetchSiteUsers()
       setData({ users: usersData, payments: paymentsData, adminData:adminData });
       // setLoginStatus(true);
+      setPayments(getPaymentChunk(usersData, paymentsData))
+      setSiteUSers(siteUsersData)
+
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -73,16 +79,16 @@ const Dashboard = () => {
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Request received</th>
-                  <th>Action</th>
+                  <th>Email</th>
+                  <th>Phone</th>
                 </tr>
               </thead>
               <tbody>
-                {data?.users?.map(item => (
-                  <tr key={item.id}>
-                    <td>{item.name}</td>
-                    <td>{item.requestReceived}</td>
-                    <td>{item.action}</td>
+                {siteUsers?.map((item, i) => (
+                  <tr key={i}>
+                    <td>{item.username}</td>
+                    <td>{item.email}</td>
+                    <td>{item.phone}</td>
                   </tr>
                 ))}
               </tbody>
@@ -95,16 +101,20 @@ const Dashboard = () => {
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Request received</th>
-                <th>Action</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Subscription Plan</th>
+                <th>Date</th>
               </tr>
             </thead>
             <tbody>
-              {data?.payments?.map(item => (
-                <tr key={item.id}>
-                  <td>{item.name}</td>
-                  <td>{item.requestReceived}</td>
-                  <td>{item.action}</td>
+              {payments?.map((item,i) => (
+                <tr key={i}>
+                  <td>{item.username}</td>
+                  <td>{item.payment.amount}</td>
+                  <td>{item.payment.payment_status}</td>
+                  <td>{item.payment.subscription_plan}</td>
+                  <td>{formatDate(item.payment.payment_date)}</td>
                 </tr>
               ))}
             </tbody>
@@ -131,6 +141,19 @@ const fetchAllUsersData = async () => {
   }
 };
 
+const fetchSiteUsers = async () => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_URL_2}/users`, {
+      method: "GET",
+      credentials: "include"
+    });
+    return await response.json() || [];
+  } catch (error) {
+    console.error('Error fetching users data:', error);
+    return [];
+  }
+};
+
 const fetchAllPaymentsData = async () => {
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/getPayments`, {
@@ -143,3 +166,37 @@ const fetchAllPaymentsData = async () => {
     return [];
   }
 };
+
+
+function getPaymentChunk(usersArray, paymentsArray) {
+  // Extract user IDs from the users array
+  const userIds = usersArray.map(user => user.id);
+
+  // Map through payments and find usernames for each payment
+  const usernames = paymentsArray
+    .filter(payment => userIds.includes(payment.user_id)) // Filter payments by user_id
+    .map(payment => {
+      const user = usersArray.find(user => user.id === payment.user_id);
+      return user ? {...user, payment} : null; // Get the username or null if not found
+    })
+    // .filter(username => username); // Remove any null values
+
+  return usernames;
+}
+
+function formatDate(timestamp) {
+  const date = new Date(timestamp);
+  
+  // Format options
+  const options = {
+    year: 'numeric',
+    month: 'long', // Use 'short' for abbreviated month names
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true, // Use 12-hour format
+    timeZone: 'Africa/Lagos', // Specify the time zone
+  };
+
+  return date.toLocaleString('en-NG', options); // Nigerian English locale
+}

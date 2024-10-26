@@ -6,6 +6,7 @@ import { useAppContext } from './tools/AppContext';
 const Individuals = () => {
   const navigate = useNavigate();
   const { data, setData } = useAppContext();
+  const [ users, setUsers ] = useState();
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
@@ -24,7 +25,10 @@ const Individuals = () => {
         console.log(adminData);
         const usersData = await fetchAllUsersData();
         const paymentsData = await fetchAllPaymentsData();
-        setData({ users: usersData, payments: paymentsData, adminData: adminData });
+
+        console.log(usersData)
+        setUsers(usersData)
+        // setData({ users: usersData, payments: paymentsData, adminData: adminData });
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -37,16 +41,14 @@ const Individuals = () => {
     fetchData();
   }, []);
 
-  const handleRowClick = (id) => {
-    navigate(`/individualsRequest/${id}`); // Pass the id to the route
-  };
+  // const handleRowClick = (id) => {
+  //   navigate(`/individualsRequest`); // Pass the id to the route
+  // };
 
   if (loading) {
     return <div>Loading...</div>; // Display loading message while data is being fetched
   }
 
-  const users = data?.users || []; // Use fetched data or an empty array
-  console.log(data);
 
   return (
     <div>
@@ -67,21 +69,32 @@ const Individuals = () => {
                 <tr>
                   <th>Request ID</th>
                   <th>Individual Name</th>
-                  <th>No of Requests</th>
-                  <th>Completed Requests</th>
-                  <th>Actions</th>
+                  <th>Car Make</th>
+                  <th>Car Year</th>
+                  <th>Car Brand</th>
+                  <th>Car Engine type</th>
+                  <th>Phone</th>
+                  <th>Subscription Status</th>
+                  {/* <th>Completed Requests</th>
+                  <th>Actions</th> */}
                 </tr>
               </thead>
               <tbody>
                 {users.map((item) => (
-                  <tr key={item.id} onClick={() => handleRowClick(item.id)} style={{ cursor: 'pointer' }}>
+                  // <tr key={item.id} onClick={() => handleRowClick(item.id)} style={{ cursor: 'pointer' }}>
+                  <tr key={item.id} style={{ cursor: 'pointer' }}>
                     <td>{item.id}</td>
                     <td>{item.username}</td>
-                    <td>{item.requests}</td>
-                    <td>{item.completed}</td>
-                    <td>
+                    <td>{item.car_make}</td>
+                  <td>{item.car_year}</td>
+                  <td>{item.car_model}</td>
+                  <td>{item.engine_type}</td>
+                  <td>{item.phone}</td>
+                  <td>{item.subscription_status}</td>
+                  {/* <td>Completed Requests</td> */}
+                    {/* <td>
                       <button onClick={(e) => { e.stopPropagation(); handleRowClick(item.id); }}>View</button>
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
               </tbody>
@@ -128,3 +141,5 @@ const fetchAllPaymentsData = async () => {
     return [];
   }
 };
+
+

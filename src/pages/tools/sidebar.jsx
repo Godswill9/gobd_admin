@@ -18,7 +18,7 @@ export default class Sidebar extends Component {
             <li><a href="/individuals">Individuals</a></li>
             {/* <li><a href="/individualsRequest">Settings</a></li> */}
             <li><a href="/messages">Messages</a></li>
-            <li><a href="/support">Support</a></li>
+            {/* <li><a href="/support">Support</a></li> */}
           </ul>
           <div className="logout">Logout</div>
       </div>
