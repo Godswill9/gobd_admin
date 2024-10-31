@@ -8,11 +8,16 @@ class ResponsiveHeader extends Component {
     sidebarVisible: true,
     openUp: false, // State for controlling the openUp class
     username: "",
-    nameKey:""
+    nameKey:"",
+    messages:[],
+    unseenMessages:0,
+    siteUsers:[],
+    gobdUsers:[],
   };
 
   componentDidMount() {
     this.fetchData();
+    this.fetchMessages();
   }
 
   toggleSidebarClass = () => {
@@ -20,6 +25,7 @@ class ResponsiveHeader extends Component {
   };
 
   fetchData = async () => {
+    var gobdArr = []
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/verifyAdmin`, {
         method: "GET",
@@ -37,12 +43,85 @@ class ResponsiveHeader extends Component {
         console.log(adminData);
         this.setState({ username: adminData.username || "Admin" }); // Assuming adminData contains username
         const usersData = await this.fetchAllUsersData();
+        console.log(usersData)
+        if(usersData.message !== "no users"){
+           usersData.map((item, i)=>{
+          if(item.seen !== "SEEN"){
+            gobdArr.push(item)
+          }
+          return gobdArr
+      })
+      this.setState({gobdUsers: gobdArr})
+        }else{
+          this.setState({gobdUsers: []})
+        }
+       
         this.setState({nameKey: this.formatName(this.state.username)})
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+
+   fetchMessages = async () => {
+    var unseenArr = []
+    var unseenArrUsers = []
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL_2}/fetchAllMessages`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch messages');
+
+      const data = await response.json();
+      const separatedData = separateByMyId(data.result);
+      // console.log(separatedData)
+      separatedData.map((item, i)=>{
+        item.map((obj, index)=>{
+          if(obj.myId !=="admin" && obj.seen_by_admin !== "SEEN"){
+            unseenArr.push(obj)
+          }
+          return unseenArr
+        })
+        return unseenArr
+      })
+      console.log(separateByMyId(unseenArr))
+      this.setState({unseenMessages: separateByMyId(unseenArr).length})
+
+      console.log(this.state.unseenMessages)
+
+      // console.log(separatedData);bb===
+      // this.setState(() => ({ messages: separat edData }));
+      
+      // // setMessages(separatedData);
+      // console.log(this.state.messages)
+      const fetchSiteUsers = async () => {
+        try {
+          const response = await fetch(`${import.meta.env.VITE_API_URL_2}/users`, {
+            method: "GET",
+            credentials: "include"
+          });
+          return await response.json() || [];
+        } catch (error) {
+          console.error('Error fetching users data:', error);
+          return [];
+        }
+      };
+      const allSiteUsers = await fetchSiteUsers()
+      allSiteUsers.map((item, i)=>{
+          if(item.seen !== "SEEN"){
+            unseenArrUsers.push(item)
+          }
+          return unseenArrUsers
+      })
+      this.setState({siteUsers: unseenArrUsers})
+      
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };
+
 
   fetchAllUsersData = async () => {
     try {
@@ -97,8 +176,14 @@ class ResponsiveHeader extends Component {
             </div>
             <ul>
               <li><a href="/dashboard">Dashboard</a></li>
-              <li><a href="/individuals">Individuals</a></li>
-              <li><a href="/messages">Messages</a></li>
+              <li className='messages'><a href="/individuals">Individuals</a>
+              {this.state.gobdUsers.length !==0 || null? <span>{this.state.gobdUsers.length}</span>: ""}</li>
+              <li className='messages'><a href="/individuals_ChatUsers">Site users</a>
+             {this.state.siteUsers.length !==0 || null? <span>{this.state.siteUsers.length}</span>: ""}
+             </li>
+              <li className='messages'><a href="/messages">Messages</a>
+              {this.state.unseenMessages !== 0 || null? <span>{this.state.unseenMessages}</span>: ""}
+              </li>
               {/* <li><a href="/support">Support</a></li> */}
             </ul>
             <div className="header-search">
@@ -119,5 +204,28 @@ const DashboardWithContext = () => {
 
   return <ResponsiveHeader fetchData={fetchData} data={data} loginStatus={loginStatus} />;
 };
+
+
+function separateByMyId(arr) {
+  const result = {};
+
+  arr.forEach(item => {
+    const { myId, otherId } = item;
+
+    // Create a key that considers both myId and otherId
+    const key = [myId, otherId].sort().join('-');
+
+    // Initialize an array for this key if it doesn't exist
+    if (!result[key]) {
+      result[key] = [];
+    }
+
+    // Push the current item into the appropriate array
+    result[key].push(item);
+  });
+
+  // Convert the result object into an array of arrays
+  return Object.values(result);
+}
 
 export default DashboardWithContext;

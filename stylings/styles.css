@@ -189,6 +189,22 @@ body {
   border-left: 2px solid rgb(6, 6, 124);
   font-weight: bold;
 }
+.sideBar ul li.messages {
+  display: flex;
+}
+.sideBar ul li.messages span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  padding: 4px;
+  border-radius: 50%;
+  background-color: rgb(255, 38, 0);
+  color: white;
+  margin-right: 5px;
+  font-weight: bold;
+}
 .sideBar .logout {
   position: absolute;
   bottom: 10%;
@@ -245,6 +261,12 @@ body {
 .container .section1 .active {
   background: rgb(27, 27, 75);
   color: white;
+  font-weight: bold;
+}
+.container .section1 .active_gobd {
+  background: rgb(255, 186, 96);
+  color: rgb(27, 27, 75);
+  font-weight: bold;
 }
 .container .section2 {
   width: 100%;
@@ -439,6 +461,8 @@ body {
   color: rgb(160, 160, 160);
   font-size: 11px;
   padding: 5px;
+  position: relative;
+  width: 100%;
 }
 .container .containerMessages .messageSection .messageList .details .indiv .image {
   margin: 5px;
@@ -454,6 +478,23 @@ body {
 }
 .container .containerMessages .messageSection .messageList .details .indiv .other .messageDetails {
   letter-spacing: 1px;
+}
+.container .containerMessages .messageSection .messageList .details .indiv .num {
+  position: absolute;
+  top: -50;
+  right: -50;
+  width: 1.5em;
+  height: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7em;
+  height: 1.7em;
+  padding: 4px;
+  border-radius: 50%;
+  background-color: rgb(255, 38, 0);
+  color: white;
+  font-weight: bold;
 }
 .container .containerMessages .messageSection .messageList .details .indiv:hover {
   background: rgb(6, 6, 124);
@@ -482,7 +523,7 @@ body {
   width: 100%;
 }
 .container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender {
-  padding: 10px;
+  padding: 5px;
 }
 .container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender .senderInner {
   display: flex;
@@ -502,7 +543,7 @@ body {
   text-align: left;
 }
 .container .containerMessages .messageSection .chatSection .chatCont .messageSection .reciever {
-  padding: 10px;
+  padding: 5px;
 }
 .container .containerMessages .messageSection .chatSection .chatCont .messageSection .reciever .recieverInner {
   display: flex;
@@ -773,6 +814,10 @@ body {
   font-family: sans-serif;
   font-size: 12px;
   background: rgba(42, 0, 231, 0.137);
+  background: url(../public/image_asoroauto.webp), rgb(255, 255, 255);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 20%;
 }
 .signup-container .inner {
   width: 30%;
@@ -836,6 +881,10 @@ body {
   font-family: sans-serif;
   font-size: 14px;
   background: rgba(42, 0, 231, 0.137);
+  background: url(../public/image_asoroauto.webp), rgb(255, 255, 255);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 20%;
 }
 .login-container .inner {
   width: 30%;
@@ -888,4 +937,28 @@ body {
 .login-container .success {
   color: green;
   margin-bottom: 15px;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.loading-spinner .spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }/*# sourceMappingURL=styles.css.map */

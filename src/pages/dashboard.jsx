@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'; // Make sure to import useNaviga
 import ResponsiveHeader from './tools/responsiveHeader';
 import { useAppContext } from '../pages/tools/AppContext';
 import Chart from './tools/chart';
+import Loader from './tools/loader';
 
 const Dashboard = () => {
   // const { fetchData, data } = useAppContext();
@@ -12,8 +13,10 @@ const Dashboard = () => {
   })
   const[payments, setPayments]=useState([])
   const[siteUsers, setSiteUSers]=useState([])
+  const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
+    setLoading(true)
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/verifyAdmin`, {
         method: "GET",
@@ -30,6 +33,7 @@ const Dashboard = () => {
       const usersData = await fetchAllUsersData();
       const paymentsData = await fetchAllPaymentsData();
       const siteUsersData = await fetchSiteUsers()
+      console.log(siteUsersData)
       setData({ users: usersData, payments: paymentsData, adminData:adminData });
       // setLoginStatus(true);
       setPayments(getPaymentChunk(usersData, paymentsData))
@@ -38,6 +42,8 @@ const Dashboard = () => {
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -49,23 +55,34 @@ const Dashboard = () => {
     <div>
       <ResponsiveHeader />
       <div className="container">
+      {loading ? (
+            <Loader/>
+          ) : (
+            <div>
+              {/* Add any additional content you want to show when data is loaded */}
+            </div>
+          )}
         <div className="section1">
           <div className="head">
             <h2>Key metrics</h2>
           </div>
           <div className="metrics">
             <div className="value active">
-              <div className="title">Total registered users</div>
+              <div className="title">Total registered Chat users</div>
+              <span className='num'>{siteUsers?.length || 0}</span>
+            </div>
+            <div className="value active_gobd">
+              <div className="title">Total registered GOBD users</div>
               <span className='num'>{data?.users?.length || 0}</span>
             </div>
-            <div className="value">
+            {/* <div className="value">
               <div className="title">Pending Messages</div>
               <span className='num'>12</span>
-            </div>
-            <div className="value">
+            </div> */}
+            {/* <div className="value">
               <div className="title">Post orders processed</div>
               <span className='num'>120</span>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="section2">
@@ -185,7 +202,8 @@ const fetchAllPaymentsData = async () => {
 
 function getPaymentChunk(usersArray, paymentsArray) {
   // Extract user IDs from the users array
-  const userIds = usersArray.map(user => user.id);
+  if(usersArray.length > 0 && paymentsArray.length > 0 ){
+     const userIds = usersArray.map(user => user.id);
 
   // Map through payments and find usernames for each payment
   const usernames = paymentsArray
@@ -197,6 +215,10 @@ function getPaymentChunk(usersArray, paymentsArray) {
     // .filter(username => username); // Remove any null values
 
   return usernames;
+  }else{
+    console.log("no data")
+  }
+ 
 }
 
 function formatDate(timestamp) {

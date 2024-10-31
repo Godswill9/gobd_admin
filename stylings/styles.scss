@@ -221,6 +221,22 @@ body{
                 border-left: 2px solid rgb(6, 6, 124);
                 font-weight:bold ;
               }
+              &.messages{
+                display: flex;
+                span{
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  width:2em;
+                  height:2em;
+                  padding: 4px;
+                  border-radius: 50%;
+                  background-color: rgb(255, 38, 0);
+                  color: white;
+                  margin-right: 5px;
+                  font-weight: bold;
+                }
+              }
           }
   }
 
@@ -288,6 +304,12 @@ body{
   .active {
     background: rgb(27, 27, 75);
     color: white;
+    font-weight: bold;
+  }
+  .active_gobd {
+    background: rgb(255, 186, 96);
+    color: rgb(27, 27, 75);
+    font-weight: bold;
   }
   
     }
@@ -488,6 +510,10 @@ body{
             color: rgb(160, 160, 160);
             font-size: 11px;
             padding: 5px;
+            position: relative;
+            // border: 1px solid black;
+            width: 100%;
+            // justify-content: space-between;
             .image{
               margin: 5px;
 
@@ -505,6 +531,28 @@ body{
               .messageDetails{
                 letter-spacing: 1px;
               }
+            }
+            .num{
+              position: absolute;
+              top:-50;
+              right:-50;
+              width: 1.5em;
+              height: 1.5em;
+              // border: 1px solid black;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width:1.7em;
+              height:1.7em;
+              padding: 4px;
+              border-radius: 50%;
+              background-color: rgb(255, 38, 0);
+              color: white;
+              // margin-right: 5px;
+              font-weight: bold;
+              // position: absolute;
+              // top:-20%;
+              // right: -20%;
             }
           }
           .indiv:hover{
@@ -533,7 +581,7 @@ body{
                 width: 100%;
               }
               .sender{
-                padding: 10px;
+                padding: 5px;
                 .senderInner{
                   display: flex;
                   align-items: center;
@@ -552,11 +600,13 @@ body{
                 }
               }
               .reciever{
-                padding: 10px;
+                padding: 5px;
+                // border: 1px solid black;
                 .recieverInner{
                   display: flex;
                   align-items: center;
                   justify-content:left;
+                  // border: 1px solid black;
                   .message{
                     max-width: 70%;
                     background: rgba(49, 49, 49, 0.103);
@@ -567,6 +617,7 @@ body{
     display: inline-block;
     word-wrap: break-word;
     text-align: left;
+    // border: 1px solid black;
                   }
                 }
               }
@@ -867,6 +918,11 @@ body{
   font-family: sans-serif;
   font-size: 12px;
   background: rgba(42, 0, 231, 0.137);
+  background: url(../public/image_asoroauto.webp), rgb(255, 255, 255);
+  // background-blend-mode: darken;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position:20%;
   .inner{
     width:30%;
     margin: 0 auto;
@@ -938,6 +994,11 @@ body{
   font-family: sans-serif;
   font-size: 14px;
   background: rgba(42, 0, 231, 0.137);
+  background: url(../public/image_asoroauto.webp), rgb(255, 255, 255);
+  // background-blend-mode: darken;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position:20%;
   .inner{
     width:30%;
     margin: 0 auto;
@@ -996,4 +1057,28 @@ body{
     color: green;
     margin-bottom: 15px;
   }
+}
+
+
+
+// LoadingSpinner.scss
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; // Full viewport height
+
+  .spinner {
+    width: 50px; // Width of the spinner
+    height: 50px; // Height of the spinner
+    border: 5px solid #f3f3f3; // Light background color
+    border-top: 5px solid #3498db; // Spinner color
+    border-radius: 50%; // Make it circular
+    animation: spin 1s linear infinite; // Spin animation
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

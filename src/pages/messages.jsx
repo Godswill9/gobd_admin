@@ -3,11 +3,14 @@ import Header from './tools/header';
 import Sidebar from './tools/sidebar';
 import ResponsiveHeader from './tools/responsiveHeader';
 import { useNavigate } from 'react-router-dom';
+import Loader from './tools/loader';
+import { useRef } from 'react';
 
 const Messages = () => {
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [newMessageInner, setNewMessageInner] = useState([]);
   const [userId, setUserId] = useState('yourUserId'); // Replace with actual user ID
   const [otherId, setOtherId] = useState(null); // Replace with the ID of the other user
   const [data, setData] = useState({});
@@ -15,6 +18,8 @@ const Messages = () => {
   const [currCustomer, setcurrCustomer] = useState({});
   const [messagesMain, setMessagesMain] = useState([]);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const innerContRef = useRef(null);
 
 
   // useEffect(() => {
@@ -29,6 +34,7 @@ const Messages = () => {
   // }, [messages, messagesMain]);
 
   const fetchData = async () => {
+    setLoading(true)
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/verifyAdmin`, {
         method: "GET",
@@ -48,12 +54,16 @@ const Messages = () => {
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+    } finally{
+      setLoading(false)
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  var arr = []
 
   const fetchMessages = async () => {
     try {
@@ -68,6 +78,19 @@ const Messages = () => {
       const separatedData = separateByMyId(data.result);
       console.log(separatedData);
       setMessages(separatedData);
+      const unreadMessages=[]
+      separatedData.map((item, i)=>{
+       item.map((item2, i)=>{
+        if(item2.seen_by_admin !== "SEEN"){
+          unreadMessages.push(item2)
+        }
+        return unreadMessages
+       })
+      })
+
+      setNewMessageInner(separateByMyId(unreadMessages))
+      
+      console.log(separateByMyId(unreadMessages))
 
        var users=[]
        const getAllUsers = async () => {
@@ -118,13 +141,43 @@ const Messages = () => {
       if (!response.ok) throw new Error('Failed to fetch user data');
 
       const data = await response.json();
-      console.log(data);
+      console.log(data)
+      const messagess = data.messages
+      const unreadMessages=[]
+      messagess.map((item, i)=>{
+        if(item.seen_by_admin !== "SEEN"){
+          unreadMessages.push(item)
+        }
+        return unreadMessages
+      })
+
+      // console.log(unreadMessages)
+      console.log(unreadMessages)
+      unreadMessages.forEach(async(item, i)=>{
+        var obj = {
+          messageId:item.id,
+          userId:item.myId
+        }
+        const response2 =  await fetch(`${import.meta.env.VITE_API_URL_2}/messageSeenAdmin`, {
+          method:"PUT",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(obj),   
+        })
+        if (!response2.ok) throw new Error('Failed to fetch messages');
+      
+        const data2 = await response2.json();
+    
+        console.log(data2)
+      })
+
+      console.log(unreadMessages)
+
       localStorage.setItem("customerName", data.user.username);
 
       const allMessages = data.messages;
       allMessages.sort((a, b) => new Date(a.timeRecieved) - new Date(b.timeRecieved));
 
-      console.log(myId)
+      // console.log(myId)
       setMessagesMain(allMessages);
       setOtherId(myId);
 
@@ -134,6 +187,23 @@ const Messages = () => {
       return null; // Return null or a default value in case of an error
     }
   };
+
+  const sendMail = async (message, userEmail)=>{
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL_2}/sendReplyMail`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({  message:message, userEmail:userEmail  }),
+        });
+  
+        if (!response.ok) throw new Error('Failed to fetch user data');
+  
+        const data = await response.json();
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        return null; // Return null or a default value in case of an error
+      }
+  }
 
   const handleSendMessage = async () => {
     const time = new Date().toISOString().slice(0, 19).replace('T', ' '); // Use ISO format for datetime
@@ -160,6 +230,10 @@ const Messages = () => {
       setNewMessage(''); // Clear input field
       await fetchMessages(); // Refresh messages after sending
       handleClick(otherId);
+      sendMail(newMessage, currCustomer.email)
+      if (innerContRef.current) {
+            innerContRef.current.scrollTop = innerContRef.current.scrollHeight;
+          }
     } catch (error) {
       console.error('Error sending message:', error);
     }
@@ -171,6 +245,27 @@ const Messages = () => {
       handleSendMessage();
     }
   };
+
+  
+      // unreadMessages.forEach(async(item, i)=>{
+      //   var obj = {
+      //     messageId:item.id,
+      //     userId:item.myId
+      //   }
+      //   console.log(obj)
+      //   const response2 =  await fetch(`${import.meta.env.VITE_API_URL}/messageSeenByUser`, {
+      //     method:"PUT",
+      //     headers: { 'Content-Type': 'application/json' },
+      //     body: JSON.stringify(obj),   
+      //   })
+      //   if (!response2.ok) throw new Error('Failed to fetch messages');
+      
+      //   const data2 = await response2.json();
+    
+      //   console.log(data2)
+      // })
+
+
 
   const handleClick = async (id) => {
     console.log(id);
@@ -204,6 +299,13 @@ const Messages = () => {
     <div>
       <ResponsiveHeader />
       <div className="container">
+      {loading ? (
+            <Loader/>
+          ) : (
+            <div>
+              {/* Add any additional content you want to show when data is loaded */}
+            </div>
+          )}
         <div className="containerMessages">
           <div className="headerSection">
             <div className="dm active">DM's</div>
@@ -211,16 +313,26 @@ const Messages = () => {
           </div>
           <div className="messageSection">
             <div className="messageList">
-              <div className="details">
+              <div className="details" ref={innerContRef}>
                 {messages.map((item, i) => (
                   <div className="indiv" onClick={() => handleClick(item[0].myId === "admin" ? item[0].otherId : item[0].myId)} key={i}>
                     <div className="image">
-                      <img src="vite.svg" alt="" />
+                      <img src="image_asoroauto.webp" alt="" />
                     </div>
                     <div className="other">
                       <div className="name">{customers[i]?.username}</div>
                       <div className="messageDetails">{item[0].message}</div>
                     </div>
+                    {item.map((item2, ii)=>{
+                      if(item2.seen_by_admin !== "SEEN"){
+                        arr.push(item2)
+                        console.log(arr)
+                      }else{
+                          return;
+                      }
+                   return <div className="num" key={ii}>{arr?.length}</div>
+                    })}
+                    
                   </div>
                 ))}
               </div>
@@ -241,19 +353,19 @@ const Messages = () => {
                 </div>
               </div>
               <div className="inputSection">
-                <div id="file">@</div>
+                {/* <div id="file">@</div> */}
                 <input type="text" onKeyDown={handleKeyDown} value={newMessage} id="text" placeholder='Send a message...' onChange={(e) => setNewMessage(e.target.value)} />
                 <button onClick={handleSendMessage}>Send</button>
               </div>
             </div>
             <div className="chatDetails">
               <div className="userIntro">
-                <div className="img"> <img src="vite.svg" alt="" /></div>
+                <div className="img"> <img src="image_asoroauto.webp" alt="" /></div>
                 <div className="name">{currCustomer?.username}</div>
                 <div className="role">User</div>
                 <div className="number">{currCustomer?.phone}</div>
               </div>
-              <div className="userOther">
+              {/* <div className="userOther">
                 <div className="indiv">
                   <div className="title">Title</div>
                   <div className="subTitle">subTitle</div>
@@ -270,7 +382,7 @@ const Messages = () => {
                   <div className="title">Title</div>
                   <div className="subTitle">subTitle</div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

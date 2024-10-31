@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ResponsiveHeader from './tools/responsiveHeader';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from './tools/AppContext';
+import Loader from './tools/loader';
 
 const Individuals = () => {
   const navigate = useNavigate();
@@ -9,7 +10,19 @@ const Individuals = () => {
   const [ users, setUsers ] = useState();
   const [loading, setLoading] = useState(true);
 
+  // const response2 =  await fetch(`${import.meta.env.VITE_API_URL_2}/messageSeenAdmin`, {
+  //   method:"PUT",
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify(obj),   
+  // })
+  // if (!response2.ok) throw new Error('Failed to fetch messages');
+
+  // const data2 = await response2.json();
+
+  // console.log(data2)
+
   const fetchData = async () => {
+    setLoading(true)
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/verifyAdmin`, {
         method: "GET",
@@ -28,6 +41,20 @@ const Individuals = () => {
 
         console.log(usersData)
         setUsers(usersData)
+
+        usersData.forEach(async(item, i)=>{
+          const response2 =  await fetch(`${import.meta.env.VITE_API_URL}/editGobdUserSeen`, {
+              method:"PUT",
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({userId:item.id}),   
+            })
+            if (!response2.ok) throw new Error('Failed to fetch messages');
+          
+            const data2 = await response2.json();
+          
+      })
+
+      console.log(usersData)
         // setData({ users: usersData, payments: paymentsData, adminData: adminData });
       }
     } catch (error) {
@@ -45,15 +72,18 @@ const Individuals = () => {
   //   navigate(`/individualsRequest`); // Pass the id to the route
   // };
 
-  if (loading) {
-    return <div>Loading...</div>; // Display loading message while data is being fetched
-  }
-
 
   return (
     <div>
       <ResponsiveHeader />
       <div className="container">
+      {loading ? (
+            <Loader/>
+          ) : (
+            <div>
+              {/* Add any additional content you want to show when data is loaded */}
+            </div>
+          )}
         <div className="containerIndividuals">
           <div className="section1">
             <div className="head">

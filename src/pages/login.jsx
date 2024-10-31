@@ -95,7 +95,7 @@ const Login = () => {
       <ToastContainer />
       <div className="login-container">
         <div className="inner">
-          <h2>Login</h2>
+          <h2>Admin Login</h2>
           {errorMessage && <div className="error">{errorMessage}</div>}
           {successMessage && <div className="success">{successMessage}</div>}
           <form onSubmit={handleSubmit}>

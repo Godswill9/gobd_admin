@@ -143,7 +143,7 @@ const Signup = () => {
       <ToastContainer />
       <div className="signup-container">
         <div className="inner">
-          <h2>Signup</h2>
+          <h2>Admin Signup</h2>
           {errorMessage && <div className="error">{errorMessage}</div>}
           {successMessage && <div className="success">{successMessage}</div>}
           <form onSubmit={handleSubmit}>
