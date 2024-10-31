@@ -234,6 +234,9 @@ const Messages = () => {
       if (innerContRef.current) {
             innerContRef.current.scrollTop = innerContRef.current.scrollHeight;
           }
+          setTimeout(() => {
+            window.location.reload();
+          }, 10);
     } catch (error) {
       console.error('Error sending message:', error);
     }
