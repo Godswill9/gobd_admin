@@ -3,6 +3,7 @@ import '../../stylings/styles.css'; // Import your SCSS file
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import Toastify styles
 import { useNavigate } from 'react-router-dom';
+import Loader from './tools/loader';
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -12,6 +13,7 @@ const Signup = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const code = generateRandomString(13);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -35,6 +37,7 @@ const Signup = () => {
   };
 
   const handleSignup = async (url, successMessage, errorMessage) => {
+    setLoading(true)
     const data = { username, email, password, phoneNumber, code };
   
     try {
@@ -51,6 +54,7 @@ const Signup = () => {
       console.log(res)
   
       if (res.status === 'success') {
+        setLoading(false)
         toast.success(successMessage, {
           position: 'top-right',
           autoClose: 1000,
@@ -62,6 +66,7 @@ const Signup = () => {
         });
         return true; // Indicates success
       } else if (res.message === 'Admin already exists') {
+        setLoading(false)
         toast.success('Admin already exists... proceeding to login!', {
           position: 'top-right',
           autoClose: 1000,
@@ -73,6 +78,7 @@ const Signup = () => {
         });
         return false; // Indicates admin exists
       } else {
+        setLoading(false)
         toast.error(res.message || errorMessage, {
           position: 'top-right',
           autoClose: 1000,
@@ -85,6 +91,7 @@ const Signup = () => {
         return false; // Indicates an error
       }
     } catch (error) {
+      setLoading(false)
       console.error(error);
       toast.error('Error during signup!', {
         position: 'top-right',
@@ -141,6 +148,13 @@ const Signup = () => {
   return (
     <>
       <ToastContainer />
+      {loading ? (
+            <Loader/>
+          ) : (
+            <div>
+              {/* Add any additional content you want to show when data is loaded */}
+            </div>
+          )}
       <div className="signup-container">
         <div className="inner">
           <h2>Admin Signup</h2>

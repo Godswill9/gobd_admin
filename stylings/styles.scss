@@ -1066,6 +1066,10 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
+  position: fixed;
+  width: 100%;
+  z-index: 3;
+  background: #00000049;
   height: 100vh; // Full viewport height
 
   .spinner {

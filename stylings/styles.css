@@ -943,6 +943,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: fixed;
+  width: 100%;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.2862745098);
   height: 100vh;
 }
 .loading-spinner .spinner {
