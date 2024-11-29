@@ -11,6 +11,7 @@ import Login from './pages/login';
 import Verification from './pages/verification';
 import { AppProvider } from './pages/tools/AppContext';
 import ChatUsers from './pages/chatUsers';
+import CarDiagnoses from './pages/carDiagnoses';
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
      <Route path={"/individuals"} element={<Individuals/>}></Route>
      <Route path={"/individuals_ChatUsers"} element={<ChatUsers/>}></Route>
      <Route path={"/individualsRequest"} element={<IndividualRequest/>}></Route>
+     <Route path={"/car_diagnoses"} element={<CarDiagnoses/>}></Route>
      <Route path={"/messages"} element={<Messages/>}></Route>
      <Route path={"/settings"} element={<Settings/>}></Route>
      <Route path={"/support"} element={<Support/>}></Route>

@@ -92,15 +92,18 @@ export default function ChatUsers() {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th>
+                  <th>Date registered</th>
                 </tr>
               </thead>
               <tbody>
               {users && users.length > 0 ? (
-  users.map((item, i) => (
+  users.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+  .map((item, i) => (
     <tr key={i}>
       <td>{item.username}</td>
       <td>{item.email}</td>
       <td>{item.phone}</td>
+      <td>{formatDate(item.created_at)}</td>
     </tr>
   ))
 ) : (
@@ -159,4 +162,20 @@ export default function ChatUsers() {
       return [];
     }
   };
+
   
+function formatDate(input) {
+  // Create a new Date object using the input string
+  const date = new Date(input);
+
+  // Get individual date components
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  // Format the date as "Day, Month Date, Year - HH:MM:SS"
+  return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
+}

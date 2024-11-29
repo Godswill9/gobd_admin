@@ -13,11 +13,13 @@ class ResponsiveHeader extends Component {
     unseenMessages:0,
     siteUsers:[],
     gobdUsers:[],
+    diagnoses:[],
   };
 
   componentDidMount() {
     this.fetchData();
     this.fetchMessages();
+    this.fetchDiagnoses();
   }
 
   toggleSidebarClass = () => {
@@ -62,6 +64,46 @@ class ResponsiveHeader extends Component {
       console.error('Error fetching data:', error);
     }
   };
+
+  fetchDiagnoses = async () => {
+    var unseenDiagnosesArr = []
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/verifyAdmin`, {
+        method: "GET",
+        credentials: "include"
+      });
+      const adminData = await response.json();
+
+      if (!adminData || (adminData && adminData.message === "Please log in again.")) {
+        // navigate("/login");
+        this.setState({ username: "Admin" }); // Assuming adminData contains username
+        // const usersData = await this.fetchAllUsersData();
+        // this.setState({nameKey: this.formatName(this.state.username)})
+        return;
+      } else {
+        console.log(adminData);
+        this.setState({ username: adminData.username || "Admin" }); // Assuming adminData contains username
+       const allDiagnoses = await this.fetchAllDiagnoses();
+        console.log(allDiagnoses)
+        if(allDiagnoses.message !== "no car_issues"){
+           allDiagnoses.map((item, i)=>{
+          if(item.seen !== "SEEN"){
+            unseenDiagnosesArr.push(item)
+          }
+          return unseenDiagnosesArr
+      })
+      this.setState({diagnoses: unseenDiagnosesArr})
+        }else{
+          this.setState({diagnoses: []})
+        }
+       
+        this.setState({nameKey: this.formatName(this.state.username)})
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
 
    fetchMessages = async () => {
     var unseenArr = []
@@ -122,6 +164,18 @@ class ResponsiveHeader extends Component {
     }
   };
 
+  fetchAllDiagnoses = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/getAllDiagnostics`, {
+        method: "GET",
+        credentials: "include"
+      });
+      return await response.json() || [];
+    } catch (error) {
+      console.error('Error fetching users data:', error);
+      return [];
+    }
+  };
 
   fetchAllUsersData = async () => {
     try {
@@ -176,10 +230,13 @@ class ResponsiveHeader extends Component {
             </div>
             <ul>
               <li><a href="/dashboard">Dashboard</a></li>
-              <li className='messages'><a href="/individuals">Individuals</a>
+              <li className='messages'><a href="/individuals">GOBD Users</a>
               {this.state.gobdUsers.length !==0 || null? <span>{this.state.gobdUsers.length}</span>: ""}</li>
               <li className='messages'><a href="/individuals_ChatUsers">Site users</a>
              {this.state.siteUsers.length !==0 || null? <span>{this.state.siteUsers.length}</span>: ""}
+             </li>
+              <li className='messages'><a href="/car_diagnoses">Car Diagnoses</a>
+             {this.state.diagnoses.length !==0 || null? <span>{this.state.diagnoses.length}</span>: ""}
              </li>
               <li className='messages'><a href="/messages">Messages</a>
               {this.state.unseenMessages !== 0 || null? <span>{this.state.unseenMessages}</span>: ""}
