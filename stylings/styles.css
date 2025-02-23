@@ -313,7 +313,8 @@ body {
   margin-left: 1em;
   font-size: 13px;
 }
-.container .section2 .individualsCont table th, .container .section2 .individualsCont table td {
+.container .section2 .individualsCont table th,
+.container .section2 .individualsCont table td {
   border: 1px solid rgba(0, 0, 0, 0.075);
   text-align: center;
   color: rgba(0, 0, 0, 0.596);
@@ -338,7 +339,8 @@ body {
     width: 50em;
   }
 }
-.container .section3 table th, .container .section3 table td {
+.container .section3 table th,
+.container .section3 table td {
   border: 1px solid rgba(0, 0, 0, 0.075);
   text-align: center;
   color: rgba(0, 0, 0, 0.596);
@@ -362,7 +364,8 @@ body {
     width: 50em;
   }
 }
-.container .containerSupport table th, .container .containerSupport table td {
+.container .containerSupport table th,
+.container .containerSupport table td {
   border: 1px solid rgba(0, 0, 0, 0.075);
   text-align: center;
   color: rgba(0, 0, 0, 0.596);
@@ -420,7 +423,8 @@ body {
   cursor: pointer;
   color: rgba(43, 42, 42, 0.212);
 }
-.container .containerMessages .headerSection .dm, .container .containerMessages .headerSection .notifications {
+.container .containerMessages .headerSection .dm,
+.container .containerMessages .headerSection .notifications {
   margin-right: 1em;
   padding: 5px;
   border-radius: 5px;
@@ -442,7 +446,8 @@ body {
 .container .containerMessages .messageSection {
   display: flex;
 }
-.container .containerMessages .messageSection .messageList, .container .containerMessages .messageSection .chatSection {
+.container .containerMessages .messageSection .messageList,
+.container .containerMessages .messageSection .chatSection {
   border: 1px solid rgba(0, 0, 0, 0.096);
   font-size: 13px;
 }
@@ -519,7 +524,8 @@ body {
   align-items: center;
   font-size: 11px;
 }
-.container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender, .container .containerMessages .messageSection .chatSection .chatCont .messageSection .reciever {
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender,
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .reciever {
   width: 100%;
 }
 .container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender {
@@ -541,6 +547,54 @@ body {
   display: inline-block;
   word-wrap: break-word;
   text-align: left;
+}
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender .senderInner2 {
+  max-width: 19em;
+  font-size: 13px;
+  font-family: sans-serif;
+  padding: 10px; /* Inner padding */
+  border-radius: 8px; /* Rounded corners */
+  height: -moz-fit-content;
+  height: fit-content;
+  display: inline-block;
+  word-wrap: break-word;
+  text-align: left;
+  color: white;
+  letter-spacing: 2px;
+  box-shadow: 0 2px 5px rgba(111, 226, 178, 0.1); /* Subtle shadow */
+}
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender .senderInner2 .sendBut {
+  width: 100%;
+  padding: 10px;
+  display: block;
+  background: #051c35;
+  outline: none;
+  border: 1px solid rgba(255, 255, 255, 0.171);
+  color: white;
+}
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender .senderInner2 .files {
+  width: 17em;
+  border: 1px solid rgb(94, 167, 151);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  overflow: auto;
+}
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender .senderInner2 .files .file {
+  width: 5em;
+  display: block;
+  border: 1px solid rgba(50, 58, 50, 0.048);
+  margin: 3px;
+  background-color: rgba(40, 80, 67, 0.5137254902);
+  border-radius: 5px;
+}
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender .senderInner2 .files .file .img {
+  width: 100%;
+  height: 100%;
+}
+.container .containerMessages .messageSection .chatSection .chatCont .messageSection .sender .senderInner2 .files .vid {
+  width: 100%;
+  height: 10em;
 }
 .container .containerMessages .messageSection .chatSection .chatCont .messageSection .reciever {
   padding: 5px;
@@ -631,7 +685,8 @@ body {
     overflow: auto;
   }
 }
-.container .containerIndividuals table th, .container .containerIndividuals table td {
+.container .containerIndividuals table th,
+.container .containerIndividuals table td {
   border: 1px solid rgba(0, 0, 0, 0.075);
   text-align: center;
   color: rgba(0, 0, 0, 0.596);
@@ -672,7 +727,8 @@ body {
   border-collapse: collapse;
   font-size: 13px;
 }
-.container .containerRequest table th, .container .containerRequest table td {
+.container .containerRequest table th,
+.container .containerRequest table td {
   border: 1px solid rgba(0, 0, 0, 0.075);
   color: rgba(0, 0, 0, 0.596);
   padding: 10px;
@@ -745,6 +801,43 @@ body {
 }
 .container .containerRequest .right .reviews .indiv .author {
   text-align: right;
+}
+.container .biggerPic {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+.container .biggerPic .img {
+  width: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  padding-top: 4em;
+  position: absolute;
+}
+@media (min-width: 768px) {
+  .container .biggerPic .img {
+    width: 30%;
+  }
+}
+.container .biggerPic .img img {
+  width: 100%;
+  height: 80%;
+}
+.container .biggerPic .biggerPicWrapper {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  background: rgba(0, 0, 0, 0.904);
 }
 
 @media (max-width: 768px) {

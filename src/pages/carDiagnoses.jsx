@@ -24,7 +24,7 @@ export default function CarDiagnoses() {
           setData(null); // Clear data if not logged in
           return;
         } else {
-          console.log(adminData);
+          // console.log(adminData);
           const diagnoses = await fetchAllDiagnoses();
         setDiagnoses(diagnoses)
 
@@ -41,7 +41,7 @@ export default function CarDiagnoses() {
             
         })
 
-        console.log(diagnoses)
+        // console.log(diagnoses)
     }
       } catch (error) {
         console.error('Error fetching data:', error);

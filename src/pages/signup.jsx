@@ -51,7 +51,7 @@ const Signup = () => {
       });
   
       const res = await response.json();
-      console.log(res)
+      // console.log(res)
   
       if (res.status === 'success') {
         setLoading(false)

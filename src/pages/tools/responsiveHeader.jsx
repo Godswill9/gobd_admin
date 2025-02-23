@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Breadcrumb from './breadCrumb'; // Ensure you have the correct path for this import
 import '../../../stylings/styles.css'; // Import your CSS file
 import { useAppContext } from './AppContext';
+import Cookies from "js-cookie";
 
 class ResponsiveHeader extends Component {
   state = {
@@ -64,6 +65,21 @@ class ResponsiveHeader extends Component {
       console.error('Error fetching data:', error);
     }
   };
+
+  logout = async() => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/logoutadmin`, {
+        method: "GET",
+        credentials: "include"
+      });
+      const res = await response.json();
+      console.log(res)
+      res.status=="success"?window.location.href = "/login":'';
+    }catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
 
   fetchDiagnoses = async () => {
     var unseenDiagnosesArr = []
@@ -246,13 +262,13 @@ class ResponsiveHeader extends Component {
             <div className="header-search">
               <input type="text" placeholder="Search..." />
             </div>
-            <div className="logout"><i className="bi bi-box-arrow-right"></i> Logout</div>
+            <div className="logout" onClick={this.logout}><i className="bi bi-box-arrow-right"></i> Logout</div>
             <div className="close" onClick={this.toggleSidebarClass}><i className="bi bi-x-lg"></i></div>
           </div>
         )}
       </header>
     );
-  }
+  } 
 }
 
 // Create a wrapper component to inject context and navigation

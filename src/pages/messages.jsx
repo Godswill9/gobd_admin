@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from './tools/header';
 import Sidebar from './tools/sidebar';
 import ResponsiveHeader from './tools/responsiveHeader';
 import { useNavigate } from 'react-router-dom';
 import Loader from './tools/loader';
-import { useRef } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import Toastify styles
+
 
 const Messages = () => {
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [newMessageInner, setNewMessageInner] = useState([]);
-  const [userId, setUserId] = useState('yourUserId'); // Replace with actual user ID
+  const [userId, setUserId] = useState('admin'); // Replace with actual user ID
   const [otherId, setOtherId] = useState(null); // Replace with the ID of the other user
   const [data, setData] = useState({});
   const [customers, setCustomers] = useState([]);
@@ -20,7 +22,21 @@ const Messages = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const innerContRef = useRef(null);
-
+    const [showImg, setShowImg] = useState(false);
+    const [imgValue, setimgValue] = useState("");
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [selectedRawFiles, setSelectedRawFiles] = useState([]);
+   const [isVisible, setIsVisible] = useState(false); // Track visibility for transition
+ 
+   useEffect(() => {
+     if (selectedRawFiles.length > 0) {
+       setIsVisible(true);
+     } else {
+       setTimeout(() => setIsVisible(false), 300); // Wait for transition to finish before setting display: none
+     }
+   }, [selectedRawFiles]);
+ 
+  
 
   // useEffect(() => {
   //   fetchData();
@@ -47,7 +63,7 @@ const Messages = () => {
         setData(null); // Clear data if not logged in
         return;
       } else {
-        console.log(adminData);
+        // console.log(adminData);
         setData(adminData);
         setUserId(adminData.id);
         fetchMessages();
@@ -76,7 +92,7 @@ const Messages = () => {
 
       const data = await response.json();
       const separatedData = separateByMyId(data.result);
-      console.log(separatedData);
+      // console.log(separatedData);
       setMessages(separatedData);
       const unreadMessages=[]
       separatedData.map((item, i)=>{
@@ -90,7 +106,7 @@ const Messages = () => {
 
       setNewMessageInner(separateByMyId(unreadMessages))
       
-      console.log(separateByMyId(unreadMessages))
+      // console.log(separateByMyId(unreadMessages))
 
        var users=[]
        const getAllUsers = async () => {
@@ -116,7 +132,7 @@ const Messages = () => {
           );
           const filteredUsers = users.filter(user => user !== null);
           setCustomers(filteredUsers);
-          console.log(filteredUsers)
+          // console.log(filteredUsers)
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
@@ -141,7 +157,7 @@ const Messages = () => {
       if (!response.ok) throw new Error('Failed to fetch user data');
 
       const data = await response.json();
-      console.log(data)
+      // console.log(data)
       const messagess = data.messages
       const unreadMessages=[]
       messagess.map((item, i)=>{
@@ -152,7 +168,6 @@ const Messages = () => {
       })
 
       // console.log(unreadMessages)
-      console.log(unreadMessages)
       unreadMessages.forEach(async(item, i)=>{
         var obj = {
           messageId:item.id,
@@ -167,10 +182,10 @@ const Messages = () => {
       
         const data2 = await response2.json();
     
-        console.log(data2)
+        // console.log(data2)
       })
 
-      console.log(unreadMessages)
+      // console.log(unreadMessages)
 
       localStorage.setItem("customerName", data.user.username);
 
@@ -187,6 +202,114 @@ const Messages = () => {
       return null; // Return null or a default value in case of an error
     }
   };
+
+  const handleUpload = async () => {
+    try {
+      if (otherId == null) {
+        // console.log("Please select a valid user");
+        toast.error("Please select a valid user", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+        return;
+      }
+  
+      setLoading(true);
+  
+      const formData = new FormData();
+  
+      // Ensure selectedFiles is defined before looping
+      if (!selectedFiles || selectedFiles.length === 0) {
+        // console.log("No files selected");
+        toast.error("No files selected!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+        setLoading(false);
+        return;
+      }
+  
+      // Append each file to FormData
+      selectedFiles.forEach((file) => {
+        formData.append("files", file);
+      });
+  
+      // Append additional metadata
+      formData.append("senderId", "admin");
+      formData.append("receiverId", otherId);
+  
+      // Send request to upload files
+      const response = await fetch(`${import.meta.env.VITE_API_URL_2}/upload`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+  
+      const result = await response.json();
+      setLoading(false);
+  
+      if (!response.ok) {
+        throw new Error(result.message || "Upload failed");
+      }
+  
+      // Scroll to bottom if innerContRef exists
+      if (innerContRef.current) {
+        innerContRef.current.scrollTop = innerContRef.current.scrollHeight;
+      }
+  
+      // console.log(result);
+  
+      if (result.message === "Message sent successfully") {
+        toast.success("Upload successful!", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+        });
+  
+        setSelectedRawFiles([]);
+      }
+  
+      // Fetch new messages and update UI in correct order
+      await fetchMessages();
+      handleClick(otherId);
+      
+      if (newMessage && currCustomer?.email) {
+        sendMail(newMessage, currCustomer.email);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error uploading:", error);
+  
+      toast.error("Please compress the image(s) or select smaller files", {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+    }
+  };
+  
+  
+    const handleClearall=()=>{
+      setSelectedRawFiles([])
+      toast.success('Image(s) cleared', {
+        position: 'top-right',
+        autoClose: 200,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: 'light',
+      });
+    }
+    
 
   const sendMail = async (message, userEmail)=>{
       try {
@@ -210,11 +333,29 @@ const Messages = () => {
 // console.log(otherId)
 // console.log(userId)
     if (!newMessage.trim()) {
-      console.log("Please enter a message");
+      // console.log("Please enter a message");
+      toast.error("Please enter a message", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
       return;
     }
     if (otherId == null) {
-      console.log("Please select a valid user");
+      // console.log("Please select a valid user");
+      toast.error("Please select a valid user", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
       return;
     }
 
@@ -249,6 +390,75 @@ const Messages = () => {
     }
   };
 
+  const handleButtonClick = () => {
+    const inputRef = document.createElement('input');
+    inputRef.type = 'file';
+    inputRef.multiple = true; 
+  
+    inputRef.addEventListener('change', handleFileChange);
+    inputRef.click();
+  };
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+  setSelectedRawFiles(files)
+  // console.log(files)
+    if (files.length > 10) {
+      return;
+    }else{
+const imageArray = [];
+files.forEach((file, i) => {
+  setFileToBase(file, (dataURI) => {
+    // Add the data URI to the image array
+    imageArray.push(dataURI);
+
+    // If all images have been processed, update state
+    if (imageArray.length === files.length) {
+      // console.log(imageArray)
+     setSelectedFiles(imageArray);
+     if (innerContRef.current) {
+      innerContRef.current.scrollTop = innerContRef.current.scrollHeight;
+    }
+    }
+  });
+});
+    }
+  };
+  
+  // Base64 conversion function for displaying images
+  const setFileToBase = (file, callback) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      const dataURI = reader.result;
+      callback(dataURI); // Call the callback with the base64 encoded string
+    };
+  };
+
+  const renderFilePreview = (file) => {
+    const isImage = file.type.startsWith('image');
+    const isVideo = file.type.startsWith('video');
+
+    if (isImage) {
+      const imageUrl = URL.createObjectURL(file);
+      // console.log(imageUrl)
+      return <span className="file img" key={file.name}>
+        <img className="img" key={file.name} src={imageUrl} alt="thumbnail" />
+      </span>;  // Only render img span for image files
+    }
+
+    if (isVideo) {
+      const videoUrl = URL.createObjectURL(file);
+      // console.log(videoUrl)
+      return <span className="file vid" key={file.name}>
+          <video className="vid" key={file.name} width="120" height="90" controls poster={videoUrl}>
+          <source src={videoUrl} type={file.type} />
+        </video>
+      </span>;  // Only render vid span for video files
+    }
+
+    return null;  // Optionally handle unsupported file types
+  };
+
   
       // unreadMessages.forEach(async(item, i)=>{
       //   var obj = {
@@ -271,7 +481,7 @@ const Messages = () => {
 
 
   const handleClick = async (id) => {
-    console.log(id);
+    // console.log(id);
     setOtherId(id);
     const time = new Date().toISOString(); // Use ISO format for datetime
 
@@ -286,7 +496,7 @@ const Messages = () => {
 
       const allMessages = messages;
 
-      console.log(id)
+      // console.log(id)
 
       fetchMessagesMore(id)
       setOtherId(id);
@@ -298,10 +508,17 @@ const Messages = () => {
     }
   };
 
+  const fetchImg=(img)=>{
+    setShowImg(true)
+    setimgValue(img)
+  }
+  
+
   return (
     <div>
       <ResponsiveHeader />
       <div className="container">
+      <ToastContainer />
       {loading ? (
             <Loader/>
           ) : (
@@ -329,7 +546,7 @@ const Messages = () => {
                     {item.map((item2, ii)=>{
                       if(item2.seen_by_admin !== "SEEN"){
                         arr.push(item2)
-                        console.log(arr)
+                        // console.log(arr)
                       }else{
                           return;
                       }
@@ -342,21 +559,64 @@ const Messages = () => {
             </div>
             <div className="chatSection">
               <div className="chatCont">
-                <div className="messageSection">
+                <div className="messageSection" ref={innerContRef}>
                   {messagesMain
                     .sort((a, b) => new Date(a.timeReceived) - new Date(b.timeReceived))
-                    .map((item, i) => (
+                    .map((item, i) => {
+                      const isError = item.message.includes("An error occurred");
+                      const messageClass = isError ? 'errorMessage' : item.role;
+                      if(item.message.startsWith("https:")){
+                      return(
                       <div className={item.otherId === "admin" ? "reciever" : "sender"} key={i}>
                         <div className={item.otherId === "admin" ? "recieverInner" : "senderInner"}>
-                          <img src="" alt="" />
-                          <div className="message">{item.message}</div>
-                        </div>
+                          <img 
+                              src={`${item.message}`} 
+                              style={{
+                                border: "2px solid #ccc", 
+                                borderRadius: "10px", 
+                                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                                maxWidth: "50%", 
+                                height: "auto",
+                                display: "block"
+                              }} 
+                              alt="Message Image" 
+                              onClick={()=>fetchImg(item.message)}
+                            />
+                               </div>
                       </div>
-                    ))}
+                    )}else{
+                      return(
+                        <div className={item.otherId === "admin" ? "reciever" : "sender"} key={i}>
+                          <div className={item.otherId === "admin" ? "recieverInner" : "senderInner"}>
+                            <img src="" alt="" />
+                            <div className="message">{item.message}</div>
+                          </div>
+                        </div>
+                      )
+                    }
+                  })}
+                    <div
+        className="image-preview sender"
+        style={{
+          opacity: isVisible ? 1 : 0,
+          visibility: isVisible ? 'visible' : 'hidden',
+          display: isVisible ? 'flex' : 'none',
+          transition: 'opacity 0.3s ease, visibility 0s 0.3s', // Ensure visibility change happens after opacity
+        }}
+      >
+        <span className="senderInner2">
+          <div className="files">
+            {selectedRawFiles.map((file) => renderFilePreview(file))}
+          </div>
+          <button className="sendBut" onClick={handleUpload}>Send Img file(s)</button>
+          <button className="sendBut" style={{background:"red"}} onClick={handleClearall}>Clear all</button>
+        </span>
+      </div>
                 </div>
               </div>
               <div className="inputSection">
                 {/* <div id="file">@</div> */}
+                <i class="bi bi-paperclip" id='file' onClick={handleButtonClick}></i>
                 <input type="text" onKeyDown={handleKeyDown} value={newMessage} id="text" placeholder='Send a message...' onChange={(e) => setNewMessage(e.target.value)} />
                 <button onClick={handleSendMessage}>Send</button>
               </div>
@@ -388,6 +648,10 @@ const Messages = () => {
               </div> */}
             </div>
           </div>
+        </div>
+        <div className="biggerPic" style={{display: showImg? "flex":"none"}}>
+          <div className="biggerPicWrapper" onClick={()=> setShowImg(false)}></div>
+          <div className="img"><img src={imgValue} alt="" /></div>
         </div>
       </div>
     </div>

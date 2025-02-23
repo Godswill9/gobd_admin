@@ -20,7 +20,7 @@ const IndividualRequest = () => {
         setData(null); // Clear data if not logged in
         return;
       } else { 
-        console.log(adminData);
+        // console.log(adminData);
         // Fetch additional data if logged in
         const usersData = await fetchAllUsersData();
         const paymentsData = await fetchAllPaymentsData();

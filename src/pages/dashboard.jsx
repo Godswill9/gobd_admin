@@ -28,12 +28,12 @@ const Dashboard = () => {
         setData(null); // Clear data if not logged in
         return;
       } else{ 
-        console.log(adminData)
+        // console.log(adminData)
           // // Fetch additional data if logged in
       const usersData = await fetchAllUsersData();
       const paymentsData = await fetchAllPaymentsData();
       const siteUsersData = await fetchSiteUsers()
-      console.log(siteUsersData)
+      // console.log(siteUsersData)
       setData({ users: usersData, payments: paymentsData, adminData:adminData });
       // setLoginStatus(true);
       setPayments(getPaymentChunk(usersData, paymentsData))
@@ -216,7 +216,7 @@ function getPaymentChunk(usersArray, paymentsArray) {
 
   return usernames;
   }else{
-    console.log("no data")
+    // console.log("no data")
   }
  
 }

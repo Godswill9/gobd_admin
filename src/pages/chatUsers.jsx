@@ -26,7 +26,7 @@ export default function ChatUsers() {
           setData(null); // Clear data if not logged in
           return;
         } else {
-          console.log(adminData);
+          // console.log(adminData);
           const usersData = await fetchSiteUsers();
         setUsers(usersData)
 
@@ -40,11 +40,11 @@ export default function ChatUsers() {
             
               const data2 = await response2.json();
             
-              console.log(data2)
+              // console.log(data2)
             
         })
 
-        console.log(usersData)
+        // console.log(usersData)
   
           // setData({ users: usersData, payments: paymentsData, adminData: adminData });
         }

@@ -35,11 +35,11 @@ const Individuals = () => {
         setData(null); // Clear data if not logged in
         return;
       } else {
-        console.log(adminData);
+        // console.log(adminData);
         const usersData = await fetchAllUsersData();
         const paymentsData = await fetchAllPaymentsData();
 
-        console.log(usersData)
+        // console.log(usersData)
         setUsers(usersData)
 
         usersData.forEach(async(item, i)=>{
@@ -54,7 +54,7 @@ const Individuals = () => {
           
       })
 
-      console.log(usersData)
+      // console.log(usersData)
         // setData({ users: usersData, payments: paymentsData, adminData: adminData });
       }
     } catch (error) {
