@@ -43,10 +43,10 @@ class ResponsiveHeader extends Component {
         // this.setState({nameKey: this.formatName(this.state.username)})
         return;
       } else {
-        console.log(adminData);
+        // console.log(adminData);
         this.setState({ username: adminData.username || "Admin" }); // Assuming adminData contains username
         const usersData = await this.fetchAllUsersData();
-        console.log(usersData)
+        // console.log(usersData)
         if(usersData.message !== "no users"){
            usersData.map((item, i)=>{
           if(item.seen !== "SEEN"){
@@ -73,7 +73,7 @@ class ResponsiveHeader extends Component {
         credentials: "include"
       });
       const res = await response.json();
-      console.log(res)
+      // console.log(res)
       res.status=="success"?window.location.href = "/login":'';
     }catch (error) {
       console.error('Error fetching data:', error);
@@ -97,10 +97,10 @@ class ResponsiveHeader extends Component {
         // this.setState({nameKey: this.formatName(this.state.username)})
         return;
       } else {
-        console.log(adminData);
+        // console.log(adminData);
         this.setState({ username: adminData.username || "Admin" }); // Assuming adminData contains username
        const allDiagnoses = await this.fetchAllDiagnoses();
-        console.log(allDiagnoses)
+        // console.log(allDiagnoses)
         if(allDiagnoses.message !== "no car_issues"){
            allDiagnoses.map((item, i)=>{
           if(item.seen !== "SEEN"){
@@ -144,10 +144,10 @@ class ResponsiveHeader extends Component {
         })
         return unseenArr
       })
-      console.log(separateByMyId(unseenArr))
+      // console.log(separateByMyId(unseenArr))
       this.setState({unseenMessages: separateByMyId(unseenArr).length})
 
-      console.log(this.state.unseenMessages)
+      // console.log(this.state.unseenMessages)
 
       // console.log(separatedData);bb===
       // this.setState(() => ({ messages: separat edData }));
